@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: KLT Converter
+
+server:
+  port: 8080
+  servlet:
+    context-path: /klt
+
+fixer: http://data.fixer.io/api/latest?access_key=
+fixer.key: 53751f9d36745ba528970b352e95b6a0
