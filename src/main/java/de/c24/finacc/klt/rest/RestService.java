@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +32,6 @@ public class RestService {
     }
 
     private final RestTemplate restTemplate;
-    private FixerResponse fixerResponse;
 
     @Value("${fixer}" + "${fixer.key}")
     private String url;
@@ -40,16 +40,18 @@ public class RestService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public FixerResponse getFixerJSON() {
-        if (fixerResponse == null || System.currentTimeMillis() / 1000 - fixerResponse.getTimestamp() > 300) {
-            ResponseEntity<FixerResponse> response = this.restTemplate.getForEntity(url, FixerResponse.class);
-            fixerResponse = response.getBody();
-        }
-        //  System.out.println(fixerResponse.getTimestamp());
-        //  System.out.println(System.currentTimeMillis() / 1000);
-        //  System.out.println("----");
-        return fixerResponse;
+    public Map<String, String> getCurrenciesMap() {
+        ResponseEntity<ResponseFixer> responseFull = this.restTemplate.getForEntity(url, ResponseFixer.class);
+        ResponseFixer responseFixer = responseFull.getBody();
+
+        return responseFixer == null ? Collections.EMPTY_MAP : responseFixer.getRates();
     }
 
+    public Map<String, String> update(String currency) {
+        String ulrParam = url + "&symbols=" + currency;
+        ResponseEntity<ResponseFixer> responseOne = this.restTemplate.getForEntity(ulrParam, ResponseFixer.class);
+        ResponseFixer responseFixer = responseOne.getBody();
 
+        return responseFixer == null ? Collections.EMPTY_MAP : responseFixer.getRates();
+    }
 }

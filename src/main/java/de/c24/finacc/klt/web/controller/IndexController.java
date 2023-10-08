@@ -34,7 +34,7 @@ public class IndexController {
         model.addAttribute("title", "Karten&Konten KLT");
         model.addAttribute("welcome", "Welcome to Check24");
         model.addAttribute("applicationTitle", "Check24 Currency Converter");
-        model.addAttribute("listCurrency", restService.getFixerJSON().getRates().keySet());
+        model.addAttribute("listCurrency", converterService.getCurrenciesNames());
         return "index";
     }
 
@@ -46,10 +46,12 @@ public class IndexController {
             @RequestParam("amount") String amount,
             //  BindingResult bindingResult,
             Model model) {
+
+
         model.addAttribute("title", "Karten&Konten KLT");
         model.addAttribute("welcome", "Welcome to Check24");
         model.addAttribute("applicationTitle", "Check24 Currency Converter");
-        model.addAttribute("listCurrency", restService.getFixerJSON().getRates().keySet());
+        model.addAttribute("listCurrency", converterService.getCurrenciesNames());
         model.addAttribute("total",
                 String.valueOf(converterService.convert(amount.isEmpty() ? 0.00 : Double.parseDouble(amount.replace(',', '.')), from, to)));
         model.addAttribute("from", from);
